@@ -9,9 +9,12 @@ import {
   BookOpenCheck,
   ClipboardList,
   LayoutDashboard,
-  LogOut
+  LogOut,
+  Sparkles,
+  UserCircle2
 } from "lucide-react";
 
+import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 import { useApp } from "@/hooks/use-app";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -24,9 +27,74 @@ interface AppShellProps {
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/simulados", label: "Simulados", icon: ClipboardList },
-  { href: "/historico", label: "Historico", icon: BarChart3 },
-  { href: "/revisao", label: "Revisao", icon: BookOpenCheck }
+  { href: "/historico", label: "Histórico", icon: BarChart3 },
+  { href: "/revisao", label: "Revisão", icon: BookOpenCheck }
 ];
+
+function getPageMeta(pathname: string): {
+  title: string;
+  subtitle: string;
+  action?: { label: string; href: string };
+} {
+  if (pathname === "/dashboard") {
+    return {
+      title: "Dashboard",
+      subtitle: "Visão geral de desempenho e evolução de estudo.",
+      action: { label: "Iniciar simulado", href: "/simulados" }
+    };
+  }
+
+  if (pathname === "/simulados") {
+    return {
+      title: "Simulados",
+      subtitle: "Escolha a prova ideal e acompanhe seu progresso por tentativa."
+    };
+  }
+
+  if (pathname.includes("/simulados/") && pathname.endsWith("/tentar")) {
+    return {
+      title: "Simulado em andamento",
+      subtitle: "Foco total na resolução da prova."
+    };
+  }
+
+  if (pathname.startsWith("/simulados/")) {
+    return {
+      title: "Detalhes do simulado",
+      subtitle: "Confira estrutura, temas e duração antes de começar.",
+      action: { label: "Iniciar simulado", href: `${pathname}/tentar` }
+    };
+  }
+
+  if (pathname === "/historico") {
+    return {
+      title: "Histórico",
+      subtitle: "Compare tentativas e acompanhe sua evolução.",
+      action: { label: "Ver simulados", href: "/simulados" }
+    };
+  }
+
+  if (pathname === "/revisao") {
+    return {
+      title: "Revisão",
+      subtitle: "Questões erradas, marcadas e rascunhos em um só lugar.",
+      action: { label: "Abrir histórico", href: "/historico" }
+    };
+  }
+
+  if (pathname.includes("/tentativas/") && pathname.endsWith("/resultado")) {
+    return {
+      title: "Resultado",
+      subtitle: "Correção, análise e próximos passos personalizados.",
+      action: { label: "Voltar ao dashboard", href: "/dashboard" }
+    };
+  }
+
+  return {
+    title: "SIMU.AI",
+    subtitle: "Plataforma inteligente de simulados."
+  };
+}
 
 export function AppShell({ children }: AppShellProps): JSX.Element {
   const { auth, signOut } = useApp();
@@ -55,19 +123,100 @@ export function AppShell({ children }: AppShellProps): JSX.Element {
     );
   }
 
+  const pageMeta = getPageMeta(pathname);
+
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_hsl(196_100%_97%),_hsl(210_40%_98%))]">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4 lg:flex-row lg:px-6">
-        <aside className="w-full rounded-2xl border border-border/60 bg-card/95 p-4 shadow-sm lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:w-64">
-          <div className="mb-6">
-            <p className="text-sm font-semibold tracking-wide text-primary">SIMU.AI</p>
-            <h1 className="text-lg font-bold">Diagnostico de estudo</h1>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Transforme erro em progresso
-            </p>
+    <div className="min-h-screen">
+      <aside className="surface-panel fixed inset-y-0 left-0 hidden w-[264px] flex-col border-r border-sidebar-border/90 px-4 py-5 lg:flex">
+        <div>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
+            SIMU.AI
+          </div>
+          <h1 className="text-xl font-semibold">Diagnóstico de estudo</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Plataforma moderna para simulado, análise e revisão ativa.
+          </p>
+        </div>
+
+        <div className="my-5 h-px bg-border/80" />
+
+        <nav className="space-y-2">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "group flex items-center justify-between rounded-xl border px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                  active
+                    ? "border-primary/45 bg-primary/12 text-primary shadow-[0_14px_30px_-20px_hsl(var(--primary)/0.85)]"
+                    : "border-transparent text-muted-foreground hover:border-border hover:bg-accent/45 hover:text-foreground"
+                )}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Icon className={cn("h-4 w-4", active ? "text-primary" : "text-muted-foreground")} />
+                  {item.label}
+                </span>
+                {active ? <span className="h-1.5 w-1.5 rounded-full bg-primary" /> : null}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mt-auto">
+          <div className="my-5 h-px bg-border/80" />
+          <div className="rounded-2xl border border-border/75 bg-background/75 p-3">
+            <div className="flex items-start gap-2.5">
+              <div className="rounded-lg bg-secondary p-2 text-secondary-foreground">
+                <UserCircle2 className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">{auth.user?.fullName}</p>
+                <p className="truncate text-xs text-muted-foreground">{auth.user?.email}</p>
+              </div>
+            </div>
+            <div className="mt-2">
+              {auth.isDemo ? (
+                <Badge variant="secondary">Modo demo ativo</Badge>
+              ) : (
+                <Badge variant="default">Conta autenticada</Badge>
+              )}
+            </div>
           </div>
 
-          <nav className="space-y-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-3 w-full justify-center"
+            onClick={() => void signOut()}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sair da plataforma
+          </Button>
+        </div>
+      </aside>
+
+      <div className="min-h-screen lg:pl-[264px]">
+        <header className="sticky top-0 z-30 border-b border-border/75 bg-background/88 px-4 py-3 backdrop-blur-md sm:px-6 lg:px-8">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-semibold">{pageMeta.title}</h2>
+              <p className="text-sm text-muted-foreground">{pageMeta.subtitle}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <ThemeSwitcher mode="inline" />
+              {pageMeta.action ? (
+                <Button asChild size="sm">
+                  <Link href={pageMeta.action.href}>{pageMeta.action.label}</Link>
+                </Button>
+              ) : null}
+            </div>
+          </div>
+
+          <nav className="mt-3 flex gap-2 overflow-x-auto lg:hidden">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = pathname.startsWith(item.href);
@@ -76,10 +225,10 @@ export function AppShell({ children }: AppShellProps): JSX.Element {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                    "inline-flex items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-2 text-sm",
                     active
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                      ? "border-primary/40 bg-primary/12 text-primary"
+                      : "border-border/70 bg-background text-muted-foreground"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -88,29 +237,9 @@ export function AppShell({ children }: AppShellProps): JSX.Element {
               );
             })}
           </nav>
+        </header>
 
-          <div className="mt-6 rounded-lg border border-border/70 bg-background/70 p-3">
-            <p className="text-sm font-medium">{auth.user?.fullName}</p>
-            <p className="text-xs text-muted-foreground">{auth.user?.email}</p>
-            <div className="mt-2">
-              {auth.isDemo ? <Badge variant="secondary">Modo demo</Badge> : <Badge>Conta real</Badge>}
-            </div>
-          </div>
-
-          <Button
-            type="button"
-            variant="ghost"
-            className="mt-4 w-full justify-start"
-            onClick={() => void signOut()}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Sair
-          </Button>
-        </aside>
-
-        <main className="min-h-[calc(100vh-2rem)] flex-1 rounded-2xl border border-border/50 bg-card/90 p-4 shadow-sm lg:p-6">
-          {children}
-        </main>
+        <main className="w-full px-4 py-5 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );

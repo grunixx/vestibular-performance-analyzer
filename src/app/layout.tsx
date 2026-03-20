@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 
 import "@/app/globals.css";
 import { AppProvider } from "@/components/providers/app-provider";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -18,7 +19,7 @@ const sourceSerif = Source_Serif_4({
 export const metadata: Metadata = {
   title: "SIMU.AI - Plataforma de Simulados Inteligentes",
   description:
-    "MVP educacional com simulados, analise de desempenho e recomendacoes de estudo."
+    "MVP educacional com simulados, análise de desempenho e recomendações de estudo."
 };
 
 export default function RootLayout({
@@ -29,7 +30,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${manrope.variable} ${sourceSerif.variable} font-sans`}>
-        <AppProvider>{children}</AppProvider>
+        <ThemeProvider>
+          <AppProvider>{children}</AppProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

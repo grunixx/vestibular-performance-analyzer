@@ -2,29 +2,31 @@
 
 import { memo } from "react";
 import {
+  Bar,
+  BarChart,
   CartesianGrid,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis
 } from "recharts";
 
-interface PerformancePoint {
-  attemptId: string;
-  date: string;
-  score: number;
-  accuracy: number;
+interface TimeBarDatum {
+  question: string;
+  timeSeconds: number;
 }
 
-interface PerformanceLineChartProps {
-  data: PerformancePoint[];
+interface TimeBarChartProps {
+  data: TimeBarDatum[];
 }
 
-export const PerformanceLineChart = memo(function PerformanceLineChart({
+function toMinutes(seconds: number): string {
+  return `${(seconds / 60).toFixed(1)} min`;
+}
+
+export const TimeBarChart = memo(function TimeBarChart({
   data
-}: PerformanceLineChartProps): JSX.Element {
+}: TimeBarChartProps): JSX.Element {
   const axisTick = {
     fill: "hsl(var(--chart-axis))",
     fontSize: 12
@@ -33,7 +35,7 @@ export const PerformanceLineChart = memo(function PerformanceLineChart({
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart
+        <BarChart
           data={data}
           margin={{ top: 8, right: 8, left: -10, bottom: 8 }}
         >
@@ -43,41 +45,33 @@ export const PerformanceLineChart = memo(function PerformanceLineChart({
             stroke="hsl(var(--chart-grid))"
           />
           <XAxis
-            dataKey="date"
-            tickMargin={8}
+            dataKey="question"
+            tick={axisTick}
             axisLine={false}
             tickLine={false}
-            tick={axisTick}
           />
           <YAxis
-            tickMargin={8}
+            tick={axisTick}
             axisLine={false}
             tickLine={false}
-            tick={axisTick}
-            width={38}
+            width={42}
           />
           <Tooltip
-            cursor={{ stroke: "hsl(var(--chart-grid))", strokeWidth: 1.5 }}
             contentStyle={{
               borderRadius: "0.9rem",
               border: "1px solid hsl(var(--border))",
               background: "hsl(var(--card))",
               boxShadow: "0 14px 30px -20px hsl(var(--shadow) / 0.9)"
             }}
-            labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
-            formatter={(value) => [`${value}%`, "Aproveitamento"]}
+            formatter={(value) => [toMinutes(Number(value)), "Tempo de resolução"]}
           />
-          <Line
-            type="monotone"
-            dataKey="accuracy"
-            stroke="hsl(var(--chart-1))"
-            strokeWidth={3}
-            dot={{ r: 4, fill: "hsl(var(--chart-1))", strokeWidth: 0 }}
-            activeDot={{ r: 6, fill: "hsl(var(--chart-1))" }}
+          <Bar
+            dataKey="timeSeconds"
+            fill="hsl(var(--chart-3))"
+            radius={[10, 10, 4, 4]}
             animationDuration={650}
-            name="Aproveitamento (%)"
           />
-        </LineChart>
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );

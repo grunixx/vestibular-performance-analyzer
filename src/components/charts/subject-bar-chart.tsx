@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   Bar,
   BarChart,
@@ -21,24 +22,55 @@ interface SubjectBarChartProps {
   data: SubjectDatum[];
 }
 
-export function SubjectBarChart({ data }: SubjectBarChartProps): JSX.Element {
+export const SubjectBarChart = memo(function SubjectBarChart({
+  data
+}: SubjectBarChartProps): JSX.Element {
+  const axisTick = {
+    fill: "hsl(var(--chart-axis))",
+    fontSize: 12
+  };
+
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(200 18% 80%)" />
-          <XAxis dataKey="subject" tick={{ fontSize: 12 }} stroke="hsl(205 20% 35%)" />
-          <YAxis stroke="hsl(205 20% 35%)" />
+        <BarChart
+          data={data}
+          margin={{ top: 8, right: 8, left: -10, bottom: 8 }}
+        >
+          <CartesianGrid
+            strokeDasharray="4 6"
+            vertical={false}
+            stroke="hsl(var(--chart-grid))"
+          />
+          <XAxis
+            dataKey="subject"
+            tick={axisTick}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            tick={axisTick}
+            axisLine={false}
+            tickLine={false}
+            width={38}
+          />
           <Tooltip
             contentStyle={{
-              borderRadius: "0.75rem",
-              border: "1px solid hsl(200 15% 78%)",
-              background: "hsl(0 0% 100%)"
+              borderRadius: "0.9rem",
+              border: "1px solid hsl(var(--border))",
+              background: "hsl(var(--card))",
+              boxShadow: "0 14px 30px -20px hsl(var(--shadow) / 0.9)"
             }}
+            formatter={(value) => [`${value}%`, "Acurácia"]}
           />
-          <Bar dataKey="accuracy" fill="hsl(163 72% 32%)" radius={[6, 6, 0, 0]} />
+          <Bar
+            dataKey="accuracy"
+            fill="hsl(var(--chart-2))"
+            radius={[10, 10, 4, 4]}
+            animationDuration={650}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>
   );
-}
+});

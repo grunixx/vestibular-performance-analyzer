@@ -276,7 +276,7 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
         return {
           ok: false,
           message:
-            "Supabase nao configurado neste ambiente. Use o modo demo para explorar o sistema."
+            "Supabase não configurado neste ambiente. Use o modo demo para explorar o sistema."
         };
       }
 

@@ -149,7 +149,7 @@ export function buildPerformanceSummary({
       const label = errorTags.find((errorTag) => errorTag.id === errorTagId)?.label;
       return {
         errorTagId,
-        label: label ?? "Nao classificado",
+        label: label ?? "Não classificado",
         count,
         percentage: wrongAnswers > 0 ? count / wrongAnswers : 0
       };
@@ -168,7 +168,7 @@ export function buildPerformanceSummary({
         isCorrect: answer.isCorrect,
         markedForReview: answer.markedForReview,
         timeSpentSeconds: answer.timeSpentSeconds,
-        explanation: "Questao nao encontrada",
+        explanation: "Questão não encontrada",
         manualReviewRequired: answer.manualReviewRequired
       };
     }
@@ -205,22 +205,22 @@ export function buildPerformanceSummary({
   const topWeakness = topicWeaknesses[0];
   const topErrorPattern = errorPatterns[0];
   const insights = [
-    `Voce acertou ${correctAnswers} de ${objectiveQuestions} questoes objetivas (${percent(
+    `Você acertou ${correctAnswers} de ${objectiveQuestions} questões objetivas (${percent(
       accuracy,
       1
     )}%).`,
     topWeakness
-      ? `Ponto de atencao: ${topWeakness.subject} / ${topWeakness.topic} concentrou ${topWeakness.wrongCount} erro(s).`
-      : "Nenhum tema com concentracao critica de erros nesta tentativa.",
+      ? `Ponto de atenção: ${topWeakness.subject} / ${topWeakness.topic} concentrou ${topWeakness.wrongCount} erro(s).`
+      : "Nenhum tema com concentração crítica de erros nesta tentativa.",
     topErrorPattern
-      ? `Padrao predominante: ${topErrorPattern.label} em ${percent(
+      ? `Padrão predominante: ${topErrorPattern.label} em ${percent(
           topErrorPattern.percentage,
           0
-        )}% das questoes erradas.`
-      : "Sem padrao de erro recorrente detectado.",
+        )}% das questões erradas.`
+      : "Sem padrão de erro recorrente detectado.",
     `Tempo total ${Math.round(
       totalTimeSeconds / 60
-    )} min; revise as questoes mais lentas para ganhar eficiencia.`
+    )} min; revise as questões mais lentas para ganhar eficiência.`
   ];
 
   const recommendations = generateStudyRecommendations({
@@ -374,14 +374,14 @@ export function buildDashboardMetrics(
     hardestQuestion: hardestEntry
       ? {
           questionId: hardestEntry.questionId,
-          statement: questionMap.get(hardestEntry.questionId)?.statement ?? "Questao",
+          statement: questionMap.get(hardestEntry.questionId)?.statement ?? "Questão",
           wrongRate: percent(hardestEntry.wrongRate, 1)
         }
       : undefined,
     slowestQuestion: slowestEntry
       ? {
           questionId: slowestEntry.questionId,
-          statement: questionMap.get(slowestEntry.questionId)?.statement ?? "Questao",
+          statement: questionMap.get(slowestEntry.questionId)?.statement ?? "Questão",
           averageTimeSeconds: Math.round(slowestEntry.averageTimeSeconds)
         }
       : undefined

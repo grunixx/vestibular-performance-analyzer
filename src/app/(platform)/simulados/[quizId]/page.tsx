@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useParams } from "next/navigation";
-import { AlertCircle, ArrowRight, Clock3, FileQuestion, RotateCw } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowRight,
+  Clock3,
+  FileQuestion,
+  RotateCw,
+  Sparkles
+} from "lucide-react";
 
 import { useApp } from "@/hooks/use-app";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +23,8 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { EmptyState } from "@/components/ui/empty-state";
+import { MetricTile } from "@/components/ui/metric-tile";
 
 export default function QuizDetailPage(): JSX.Element {
   const params = useParams<{ quizId: string }>();
@@ -28,23 +36,23 @@ export default function QuizDetailPage(): JSX.Element {
   const inProgressAttempt = useMemo(
     () =>
       attempts
-        .filter(
-          (attempt) => attempt.quizId === params.quizId && attempt.status === "in_progress"
-        )
+        .filter((attempt) => attempt.quizId === params.quizId && attempt.status === "in_progress")
         .sort((a, b) => b.startedAt.localeCompare(a.startedAt))[0],
     [attempts, params.quizId]
   );
 
   if (!quiz) {
     return (
-      <Card>
-        <CardContent className="p-8 text-center">
-          <p className="font-medium">Simulado nao encontrado.</p>
-          <Button asChild variant="outline" className="mt-4">
-            <Link href="/simulados">Voltar ao catalogo</Link>
+      <EmptyState
+        icon={AlertCircle}
+        title="Simulado não encontrado"
+        description="Esse simulado pode ter sido removido ou ainda não foi sincronizado."
+        action={
+          <Button asChild variant="outline">
+            <Link href="/simulados">Voltar ao catálogo</Link>
           </Button>
-        </CardContent>
-      </Card>
+        }
+      />
     );
   }
 
@@ -53,80 +61,73 @@ export default function QuizDetailPage(): JSX.Element {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-2">
-        <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-          {quiz.examBoard} {quiz.year}
-        </p>
-        <h1 className="text-3xl font-semibold">{quiz.title}</h1>
-        <p className="max-w-3xl text-muted-foreground">{quiz.description}</p>
-      </header>
+      <p className="text-sm text-muted-foreground">{quiz.description}</p>
 
       <section className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardContent className="flex items-center gap-3 p-4">
-            <FileQuestion className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-xs text-muted-foreground">Questoes</p>
-              <p className="font-semibold">{questions.length}</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center gap-3 p-4">
-            <Clock3 className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-xs text-muted-foreground">Duracao estimada</p>
-              <p className="font-semibold">{quiz.durationMinutes} min</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center gap-3 p-4">
-            <AlertCircle className="h-5 w-5 text-primary" />
-            <div>
-              <p className="text-xs text-muted-foreground">Dissertativas</p>
-              <p className="font-semibold">{essayCount}</p>
-            </div>
-          </CardContent>
-        </Card>
+        <MetricTile
+          label="Questões"
+          value={questions.length}
+          helper="Total no simulado"
+          icon={FileQuestion}
+        />
+        <MetricTile
+          label="Duração estimada"
+          value={`${quiz.durationMinutes} min`}
+          helper="Ritmo recomendado"
+          icon={Clock3}
+        />
+        <MetricTile
+          label="Dissertativas"
+          value={essayCount}
+          helper="Revisão manual posterior"
+          icon={AlertCircle}
+          status={essayCount > 0 ? "atencao" : "bom"}
+        />
       </section>
 
-      <Card>
+      <Card className="overflow-hidden">
         <CardHeader>
-          <CardTitle>Conteudos cobrados</CardTitle>
+          <div className="mb-2 inline-flex w-fit items-center gap-2 rounded-full border border-border/80 bg-background/70 px-3 py-1 text-xs text-muted-foreground">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            Conteúdos cobrados
+          </div>
+          <CardTitle className="text-2xl">Mapa rápido da prova</CardTitle>
           <CardDescription>
-            Utilize os temas para alinhar revisao antes de iniciar.
+            Use este resumo para ajustar sua estratégia antes de iniciar.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-5">
           <div className="flex flex-wrap gap-2">
             {subjects.map((subject) => (
-              <Badge key={subject} variant="secondary">
+              <Badge key={subject} variant="outline">
                 {subject}
               </Badge>
             ))}
           </div>
-          <Separator />
-          <ul className="space-y-2 text-sm text-muted-foreground">
+
+          <div className="grid gap-2 md:grid-cols-2">
             {questions.map((question) => (
-              <li key={question.id}>
-                Q{question.index}. {question.topic} ({question.subject})
-              </li>
+              <div
+                key={question.id}
+                className="rounded-xl border border-border/70 bg-background/70 px-3 py-2"
+              >
+                <p className="text-xs text-muted-foreground">Q{question.index}</p>
+                <p className="text-sm font-medium">{question.topic}</p>
+                <p className="text-xs text-muted-foreground">{question.subject}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-wrap gap-2">
-          <Button asChild>
+          <Button asChild size="lg">
             <Link href={`/simulados/${quiz.id}/tentar`}>
               Iniciar simulado
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           {inProgressAttempt ? (
-            <Button asChild variant="outline">
-              <Link
-                href={`/simulados/${quiz.id}/tentar?attemptId=${inProgressAttempt.id}`}
-              >
+            <Button asChild variant="outline" size="lg">
+              <Link href={`/simulados/${quiz.id}/tentar?attemptId=${inProgressAttempt.id}`}>
                 <RotateCw className="mr-2 h-4 w-4" />
                 Retomar tentativa em andamento
               </Link>

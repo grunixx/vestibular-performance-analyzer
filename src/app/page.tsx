@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, BarChart3, BrainCircuit, PenTool } from "lucide-react";
+import { ArrowRight, BarChart3, BrainCircuit, PenTool, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,17 +21,18 @@ export default function HomePage(): JSX.Element {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-4 py-10">
-      <div className="mx-auto max-w-3xl text-center">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+      <div className="mx-auto max-w-4xl text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/75 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+          <Sparkles className="h-3.5 w-3.5" />
           Plataforma educacional inteligente
-        </p>
+        </div>
         <h1 className="mt-4 font-serif text-4xl font-semibold leading-tight md:text-6xl">
           Transforme erros de simulado em{" "}
-          <span className="text-primary">diagnostico de estudo</span>
+          <span className="text-primary">diagnóstico de estudo</span>
         </h1>
-        <p className="mt-5 text-lg text-muted-foreground">
-          Fluxo completo: prova, rascunho manual, correcao automatica, analise de padroes
-          e recomendacoes personalizadas.
+        <p className="mx-auto mt-5 max-w-2xl text-lg text-muted-foreground">
+          Fluxo completo: prova, rascunho manual, correção automática, análise de padrões e
+          recomendações personalizadas.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Button asChild size="lg">
@@ -51,10 +52,10 @@ export default function HomePage(): JSX.Element {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <BrainCircuit className="h-5 w-5 text-primary" />
-              Analise inteligente
+              Análise inteligente
             </CardTitle>
             <CardDescription>
-              Identificacao de padroes por materia, tema e tipo de erro.
+              Identificação de padrões por matéria, tema e tipo de erro.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
@@ -67,22 +68,20 @@ export default function HomePage(): JSX.Element {
               <PenTool className="h-5 w-5 text-primary" />
               Rascunho com canvas
             </CardTitle>
-            <CardDescription>
-              Resolucao manual por questao com salvamento e retomada.
-            </CardDescription>
+            <CardDescription>Resolução manual por questão com salvamento e retomada.</CardDescription>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Suporte a mouse e toque para contas, formulas e estrategia.
+            Suporte a mouse e toque para contas, fórmulas e estratégia.
           </CardContent>
         </Card>
         <Card className="animate-fade-in-up [animation-delay:200ms]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <BarChart3 className="h-5 w-5 text-primary" />
-              Dashboard de evolucao
+              Dashboard de evolução
             </CardTitle>
             <CardDescription>
-              Historico de tentativas, comparativo e recomendacoes acionaveis.
+              Histórico de tentativas, comparativo e recomendações acionáveis.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">

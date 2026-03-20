@@ -23,6 +23,7 @@ Plataforma educacional de simulados com foco em diagnostico de estudo para ensin
 - Recomendacoes de estudo
 - Dashboard de evolucao
 - Historico e area de revisao
+- Sistema de temas com 4 opcoes (White, Night, Blue, Purple) com persistencia local
 
 ## Como rodar
 

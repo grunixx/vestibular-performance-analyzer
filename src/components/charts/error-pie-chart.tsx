@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
 interface ErrorDatum {
@@ -12,15 +13,17 @@ interface ErrorPieChartProps {
 }
 
 const COLORS = [
-  "hsl(7 78% 55%)",
-  "hsl(33 88% 53%)",
-  "hsl(191 82% 38%)",
-  "hsl(163 72% 35%)",
-  "hsl(225 63% 44%)",
-  "hsl(45 93% 47%)"
+  "hsl(var(--chart-5))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-1))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--primary))"
 ];
 
-export function ErrorPieChart({ data }: ErrorPieChartProps): JSX.Element {
+export const ErrorPieChart = memo(function ErrorPieChart({
+  data
+}: ErrorPieChartProps): JSX.Element {
   return (
     <div className="h-72 w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -34,23 +37,23 @@ export function ErrorPieChart({ data }: ErrorPieChartProps): JSX.Element {
             outerRadius={98}
             innerRadius={48}
             paddingAngle={2}
+            animationDuration={650}
           >
             {data.map((_, index) => (
-              <Cell
-                key={`error-cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
+              <Cell key={`error-cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip
             contentStyle={{
-              borderRadius: "0.75rem",
-              border: "1px solid hsl(200 15% 78%)",
-              background: "hsl(0 0% 100%)"
+              borderRadius: "0.9rem",
+              border: "1px solid hsl(var(--border))",
+              background: "hsl(var(--card))",
+              boxShadow: "0 14px 30px -20px hsl(var(--shadow) / 0.9)"
             }}
+            formatter={(value) => [value, "Ocorrências"]}
           />
         </PieChart>
       </ResponsiveContainer>
     </div>
   );
-}
+});

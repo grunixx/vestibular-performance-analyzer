@@ -35,7 +35,7 @@ export default function SignInPage(): JSX.Element {
     setLoading(false);
 
     if (!response.ok) {
-      setError(response.message ?? "Nao foi possivel entrar.");
+      setError(response.message ?? "Não foi possível entrar.");
       return;
     }
 
@@ -46,18 +46,18 @@ export default function SignInPage(): JSX.Element {
     <main className="mx-auto flex min-h-screen w-full max-w-5xl items-center px-4 py-10">
       <div className="grid w-full gap-6 md:grid-cols-[1.1fr_0.9fr]">
         <section className="rounded-2xl border border-border/60 bg-card/85 p-7">
-          <Badge variant="secondary">MVP para portfolio</Badge>
+          <Badge variant="secondary">MVP para portfólio</Badge>
           <h1 className="mt-4 font-serif text-4xl font-semibold">
-            Plataforma de simulados com analise de desempenho real.
+            Plataforma de simulados com análise de desempenho real.
           </h1>
           <p className="mt-4 text-muted-foreground">
             Login com Supabase Auth e fallback com modo demo. Ideal para apresentar em
-            entrevistas, bancas e avaliacao de produto.
+            entrevistas, bancas e avaliação de produto.
           </p>
           <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
-            <li>Catalogo de simulados com fluxo completo de prova.</li>
-            <li>Canvas de rascunho por questao com persistencia.</li>
-            <li>Correcao automatica, analise de erro e recomendacoes.</li>
+            <li>Catálogo de simulados com fluxo completo de prova.</li>
+            <li>Canvas de rascunho por questão com persistência.</li>
+            <li>Correção automática, análise de erro e recomendações.</li>
           </ul>
           <Button variant="ghost" asChild className="mt-6">
             <Link href="/">

@@ -33,19 +33,19 @@ function priorityByAccuracy(accuracy: number): RecommendationPriority {
 
 const errorPlaybooks: Record<string, string> = {
   "content-gap":
-    "Reserve 2 blocos curtos de revisao conceitual + 15 questoes graduais focadas no tema.",
+    "Reserve 2 blocos curtos de revisão conceitual + 15 questões graduais focadas no tema.",
   interpretation:
-    "Antes de marcar, resuma o enunciado em 1 frase e sublinhe condicoes obrigatorias.",
+    "Antes de marcar, resuma o enunciado em 1 frase e sublinhe condições obrigatórias.",
   calculation:
     "Adote checkpoint de conta: sinais, unidades e estimativa de ordem de grandeza.",
   attention:
-    "Use checklist final de 20 segundos por questao para evitar troca de alternativa.",
+    "Use checklist final de 20 segundos por questão para evitar troca de alternativa.",
   strategy:
-    "Treine selecao de metodo: compare 2 caminhos e escolha o mais curto antes de calcular.",
+    "Treine seleção de método: compare 2 caminhos e escolha o mais curto antes de calcular.",
   incomplete:
-    "Finalize toda resolucao com frase-resposta ou unidade final para nao deixar lacunas.",
+    "Finalize toda resolução com frase-resposta ou unidade final para não deixar lacunas.",
   "concept-doubt":
-    "Crie mapa mental com definicoes-chave e teste rapido de 5 minutos ao fim do estudo."
+    "Crie mapa mental com definições-chave e teste rápido de 5 minutos ao fim do estudo."
 };
 
 export function generateStudyRecommendations(
@@ -57,7 +57,7 @@ export function generateStudyRecommendations(
     recommendations.push({
       id: `topic-${topicWeakness.topic}-${index}`,
       title: `Priorize ${topicWeakness.topic}`,
-      description: `Desempenho baixo em ${topicWeakness.subject}. Monte um plano de 3 ciclos: teoria curta, lista de 10 questoes e revisao ativa no dia seguinte.`,
+      description: `Desempenho baixo em ${topicWeakness.subject}. Monte um plano de 3 ciclos: teoria curta, lista de 10 questões e revisão ativa no dia seguinte.`,
       priority: priorityByAccuracy(topicWeakness.accuracy),
       topic: topicWeakness.topic,
       subject: topicWeakness.subject
@@ -70,7 +70,7 @@ export function generateStudyRecommendations(
       title: `Reduza "${errorPattern.label}"`,
       description:
         errorPlaybooks[errorPattern.errorTagId] ??
-        "Adote rotina de revisao pos-prova para mapear e corrigir o padrao de erro.",
+        "Adote rotina de revisão pós-prova para mapear e corrigir o padrão de erro.",
       priority: errorPattern.percentage >= 0.3 ? "alta" : "media",
       relatedErrorTagId: errorPattern.errorTagId
     });
@@ -84,7 +84,7 @@ export function generateStudyRecommendations(
     recommendations.push({
       id: `subject-${weakestSubject.subject}`,
       title: `Plano semanal para ${weakestSubject.subject}`,
-      description: `Reserve 3 sessoes semanais de 45 minutos para ${weakestSubject.subject}, alternando revisao teorica e prova comentada.`,
+      description: `Reserve 3 sessões semanais de 45 minutos para ${weakestSubject.subject}, alternando revisão teórica e prova comentada.`,
       priority: priorityByAccuracy(weakestSubject.accuracy),
       subject: weakestSubject.subject
     });
@@ -94,7 +94,7 @@ export function generateStudyRecommendations(
     id: "study-habit",
     title: "Ritual de fechamento de simulado",
     description:
-      "Apos cada tentativa, revise apenas as 5 questoes mais lentas e as 5 erradas para transformar erro em acao imediata.",
+      "Após cada tentativa, revise apenas as 5 questões mais lentas e as 5 erradas para transformar erro em ação imediata.",
     priority: "media"
   });
 

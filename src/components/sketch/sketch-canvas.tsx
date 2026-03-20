@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import type { PointerEvent } from "react";
 import { Eraser, PenLine, Save, Trash2 } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface SketchCanvasProps {
   initialDataUrl?: string;
@@ -14,7 +16,7 @@ interface SketchCanvasProps {
 
 type Tool = "pen" | "eraser";
 
-export function SketchCanvas({
+export const SketchCanvas = memo(function SketchCanvas({
   initialDataUrl,
   onSave,
   className
@@ -22,6 +24,8 @@ export function SketchCanvas({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [tool, setTool] = useState<Tool>("pen");
   const [isDrawing, setIsDrawing] = useState(false);
+  const [brushSize, setBrushSize] = useState(2.5);
+  const [hint, setHint] = useState<string>("Toque e arraste para desenhar.");
 
   function getContext(): CanvasRenderingContext2D | null {
     const canvas = canvasRef.current;
@@ -38,13 +42,14 @@ export function SketchCanvas({
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * ratio;
     canvas.height = rect.height * ratio;
+    context.setTransform(1, 0, 0, 1, 0, 0);
     context.scale(ratio, ratio);
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, rect.width, rect.height);
     context.lineCap = "round";
     context.lineJoin = "round";
     context.lineWidth = 2.5;
-    context.strokeStyle = "#1f2937";
+    context.strokeStyle = "#0f172a";
   }, []);
 
   useEffect(() => {
@@ -87,7 +92,7 @@ export function SketchCanvas({
     context.beginPath();
     context.moveTo(x, y);
     context.globalCompositeOperation = tool === "eraser" ? "destination-out" : "source-over";
-    context.lineWidth = tool === "eraser" ? 14 : 2.5;
+    context.lineWidth = tool === "eraser" ? Math.max(brushSize * 4.6, 12) : brushSize;
     context.strokeStyle = "#0f172a";
     setIsDrawing(true);
   }
@@ -117,12 +122,16 @@ export function SketchCanvas({
     context.clearRect(0, 0, rect.width, rect.height);
     context.fillStyle = "#ffffff";
     context.fillRect(0, 0, rect.width, rect.height);
+    setHint("Canvas limpo. Continue seu rascunho.");
+    window.setTimeout(() => setHint("Toque e arraste para desenhar."), 1600);
   }
 
   function handleSave(): void {
     const canvas = canvasRef.current;
     if (!canvas) return;
     onSave(canvas.toDataURL("image/png", 1));
+    setHint("Rascunho salvo localmente.");
+    window.setTimeout(() => setHint("Toque e arraste para desenhar."), 1600);
   }
 
   return (
@@ -146,6 +155,23 @@ export function SketchCanvas({
           <Eraser className="mr-2 h-4 w-4" />
           Borracha
         </Button>
+        <div className="inline-flex items-center gap-1 rounded-lg border border-border/70 bg-background/70 p-1">
+          {[2, 3, 4].map((size) => (
+            <button
+              key={size}
+              type="button"
+              onClick={() => setBrushSize(size)}
+              className={cn(
+                "h-7 rounded-md px-2 text-xs transition-colors",
+                brushSize === size
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-accent/60"
+              )}
+            >
+              {size}px
+            </button>
+          ))}
+        </div>
         <Button type="button" variant="ghost" size="sm" onClick={clearCanvas}>
           <Trash2 className="mr-2 h-4 w-4" />
           Limpar
@@ -155,20 +181,24 @@ export function SketchCanvas({
           Salvar rascunho
         </Button>
       </div>
-      <div className="rounded-lg border border-border/70 bg-white p-2 shadow-inner">
-        <canvas
-          ref={canvasRef}
-          className="h-[280px] w-full touch-none rounded-md bg-white"
-          onPointerDown={startDrawing}
-          onPointerMove={draw}
-          onPointerUp={stopDrawing}
-          onPointerLeave={stopDrawing}
-          onPointerCancel={stopDrawing}
-        />
+
+      <div className="rounded-2xl border border-border/75 bg-gradient-to-b from-card via-card to-background p-3">
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <Badge variant="outline">Workspace</Badge>
+          <p className="text-xs text-muted-foreground">{hint}</p>
+        </div>
+        <div className="rounded-xl border border-border/80 bg-white p-2 shadow-inner">
+          <canvas
+            ref={canvasRef}
+            className="h-[280px] w-full touch-none rounded-lg bg-white"
+            onPointerDown={startDrawing}
+            onPointerMove={draw}
+            onPointerUp={stopDrawing}
+            onPointerLeave={stopDrawing}
+            onPointerCancel={stopDrawing}
+          />
+        </div>
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">
-        Rascunho livre por questao (mouse e toque). Salve para recuperar depois.
-      </p>
     </div>
   );
-}
+});
